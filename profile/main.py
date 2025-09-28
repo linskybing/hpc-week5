@@ -35,30 +35,23 @@ class Net(nn.Module):
 
 
 def train(args, model, device, train_loader, optimizer, epoch):
-    model.train()
-    
+    model.train()    
     for batch_idx, (data, target) in enumerate(train_loader):
-
         with nvtx.annotate(f"Batch {batch_idx}", color="green"):
-
             # Data loading
             with nvtx.annotate("Data Load", color="orange"):
-                data, target = data.to(device), target.to(device)
-            
+                data, target = data.to(device), target.to(device)            
             # Forward pass
             with nvtx.annotate("Forward", color="blue"):
                 output = model(data)
-
             # Loss computation
             with nvtx.annotate("Loss Computation", color="yellow"):
                 loss = F.nll_loss(output, target)
-
             # Backward and optimizer step
             with nvtx.annotate("Backward & Step", color="red"):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-
             # Logging
             if batch_idx % args.log_interval == 0:
                 print(
